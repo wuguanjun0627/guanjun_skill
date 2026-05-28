@@ -28,6 +28,7 @@ ln -sf ~/guanjun_skill ~/.cursor/skills/guanjun-skill-hub
 | 名称 | 一句话介绍 | 复制即用 prompt |
 |------|------------|-----------------|
 | [organize-files](./organize-files/) | macOS 三阶段文件整理：扫描常见文件夹 → 中文整理计划 → 确认后安全移动 | 见下方 |
+| [media-pipeline](./media-pipeline/) | OpenAI gpt-image-2 文生图：Python 脚本 + 国内代理/中转说明 | 见下方 |
 
 ### organize-files
 
@@ -37,6 +38,16 @@ ln -sf ~/guanjun_skill ~/.cursor/skills/guanjun-skill-hub
 
 ```
 用 guanjun_skill 的 organize-files：扫描 Downloads 和 Documents，列出整理计划，等我确认再执行。
+```
+
+### media-pipeline
+
+**介绍：** 用 OpenAI **gpt-image-2** 从提示词生成图片；密钥放在 `~/.config/ai-media/.env`，国内需先开本地代理（如 `127.0.0.1:7890`）或配置 `OPENAI_BASE_URL`。
+
+**复制即用：**
+
+```
+用 guanjun_skill 的 media-pipeline：按 reference.md 配置 API Key 和代理，然后帮我生成一张图——提示词是「一只在窗台晒太阳的橘猫，水彩风格」，保存到默认输出目录。
 ```
 
 ---
