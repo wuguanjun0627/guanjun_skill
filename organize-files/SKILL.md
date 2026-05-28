@@ -1,11 +1,11 @@
 ---
 name: organize-files
 description: >-
-  Interactive macOS file cleanup in three phases: scan common folders
-  (Downloads, Documents, home), propose a Chinese organization plan, then
-  execute safe moves with manifest logging. Use when the user asks to organize
-  files, clean up Downloads, sort documents, 整理文件, 清理下载, or run file
-  organization workflows.
+  macOS file cleanup sub-skill (scan → plan → execute) invoked via
+  guanjun-skill-hub. Runs three phases on Downloads/Documents/home: inventory
+  scan, Chinese organization plan, then safe moves with manifest after explicit
+  user approval. Use when hub routes here for 清理下载, Downloads cleanup, sort
+  documents, or file organization workflows — not as a standalone hub entry.
 ---
 
 # Mac 文件整理
@@ -28,9 +28,10 @@ description: >-
 2. 运行扫描脚本（或等效逻辑）：
 
 ```bash
-zsh ~/.cursor/skills/organize-files/scripts/file-organizer-scan.sh
+zsh ~/.cursor/skills/guanjun-skill-hub/organize-files/scripts/file-organizer-scan.sh
+# 或：zsh ~/guanjun_skill/organize-files/scripts/file-organizer-scan.sh
 # 自定义路径：
-zsh ~/.cursor/skills/organize-files/scripts/file-organizer-scan.sh ~/Downloads ~/Desktop
+zsh ~/.cursor/skills/guanjun-skill-hub/organize-files/scripts/file-organizer-scan.sh ~/Downloads ~/Desktop
 ```
 
 3. 读取 `~/.cursor/file-organizer/inventory.json`，向用户摘要：
@@ -47,7 +48,7 @@ zsh ~/.cursor/skills/organize-files/scripts/file-organizer-scan.sh ~/Downloads ~
 1. 运行计划草案脚本（可选，基于 inventory 生成分类建议）：
 
 ```bash
-zsh ~/.cursor/skills/organize-files/scripts/file-organizer-plan.sh
+zsh ~/.cursor/skills/guanjun-skill-hub/organize-files/scripts/file-organizer-plan.sh
 ```
 
 2. 生成**中文可读**整理计划，包含：
@@ -79,7 +80,7 @@ zsh ~/.cursor/skills/organize-files/scripts/file-organizer-plan.sh
 
 ```bash
 # 用户批准后将 plan.json 中 approved 设为 true，再执行：
-zsh ~/.cursor/skills/organize-files/scripts/file-organizer-execute.sh
+zsh ~/.cursor/skills/guanjun-skill-hub/organize-files/scripts/file-organizer-execute.sh
 ```
 
 ## 分类启发式（摘要）
