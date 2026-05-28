@@ -6,3 +6,5 @@
 *.pem
 id_rsa*
 credentials.json
+__pycache__/
+*.pyc
