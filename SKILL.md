@@ -4,8 +4,9 @@ description: >-
   Cursor skill hub for guanjun_skill — routes user intent to sub-skills in this
   repo. Use when the user pastes https://github.com/wuguanjun0627/guanjun_skill,
   mentions guanjun_skill, guanjun-skill-hub, 技能集合, skill hub, 整理文件,
-  organize-files, 文生图, OpenAI 生图, generate image, gpt-image, media-pipeline,
-  or asks to use skills from this collection.
+  organize-files, 文生图, 图生视频, 文生视频, seedream, seedance, 火山生图,
+  i2v, OpenAI 生图, generate image, gpt-image, media-pipeline, or asks to use
+  skills from this collection.
 ---
 
 # guanjun Skill Hub

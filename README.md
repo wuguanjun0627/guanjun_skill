@@ -28,7 +28,7 @@ ln -sf ~/guanjun_skill ~/.cursor/skills/guanjun-skill-hub
 | 名称 | 一句话介绍 | 复制即用 prompt |
 |------|------------|-----------------|
 | [organize-files](./organize-files/) | macOS 三阶段文件整理：扫描常见文件夹 → 中文整理计划 → 确认后安全移动 | 见下方 |
-| [media-pipeline](./media-pipeline/) | OpenAI gpt-image-2 文生图：Python 脚本 + 国内代理/中转说明 | 见下方 |
+| [media-pipeline](./media-pipeline/) | 火山 Seedream 文生图 + Seedance 视频 + OpenAI 文生图 | 见下方 |
 
 ### organize-files
 
@@ -42,12 +42,18 @@ ln -sf ~/guanjun_skill ~/.cursor/skills/guanjun-skill-hub
 
 ### media-pipeline
 
-**介绍：** 用 OpenAI **gpt-image-2** 从提示词生成图片；密钥放在 `~/.config/ai-media/.env`，国内需先开本地代理（如 `127.0.0.1:7890`）或配置 `OPENAI_BASE_URL`。
+**介绍：** 火山 **Seedream** 文生图 + **Seedance** 图生/文生视频 + OpenAI gpt-image-2。密钥在 `~/.config/ai-media/.env`（`ARK_API_KEY` / `OPENAI_API_KEY`）。国内优先用火山脚本，无需代理。
 
-**复制即用：**
+**复制即用（火山文生图）：**
 
 ```
-用 guanjun_skill 的 media-pipeline：按 reference.md 配置 API Key 和代理，然后帮我生成一张图——提示词是「一只在窗台晒太阳的橘猫，水彩风格」，保存到默认输出目录。
+用 guanjun_skill 的 media-pipeline：执行 gen_ark_image.sh，prompt 是「星际穿越，黑洞里冲出支离破碎的复古列车，电影大片」，size 2K。
+```
+
+**复制即用（图生视频）：**
+
+```
+用 guanjun_skill 的 media-pipeline：执行 gen_video.sh，prompt 是「无人机穿越障碍的沉浸式飞行」，首帧图用 https://ark-project.tos-cn-beijing.volces.com/doc_image/seepro_i2v.png，时长 5 秒。
 ```
 
 ---

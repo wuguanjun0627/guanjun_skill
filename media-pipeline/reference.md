@@ -1,4 +1,95 @@
-# OpenAI 文生图 — 国内访问与排错
+# 媒体生成 — 配置与排错
+
+## 火山方舟文生图（Seedream）
+
+### 使用示例
+
+```bash
+chmod +x ~/guanjun_skill/media-pipeline/scripts/gen_ark_image.sh
+
+~/guanjun_skill/media-pipeline/scripts/gen_ark_image.sh \
+  --prompt "星际穿越，黑洞，快支离破碎的复古列车冲出黑洞，电影大片，超现实主义" \
+  --size 2K
+```
+
+API：`POST {ARK_BASE_URL}/images/generations`，模型默认 `doubao-seedream-5-0-260128`，`response_format=url`，脚本自动下载。
+
+### 常见错误（文生图）
+
+| 现象 | 可能原因 | 处理 |
+|------|----------|------|
+| 401 | Key 无效 | 更新 `ARK_API_KEY` |
+| 403 | 未开通 Seedream 或欠费 | 控制台开通模型、充值 |
+
+---
+
+## 火山方舟图生视频 / 文生视频
+
+### 你需要准备什么
+
+1. **方舟 API Key（按量付费）**
+   - 登录 [火山方舟控制台](https://console.volcengine.com/ark) → **API Key 管理** 创建
+   - 写入 `~/.config/ai-media/.env`：`ARK_API_KEY=ark-...`
+   - **注意**：Coding Plan / Agent Plan 的 Key 与 Base URL **不能**用于 `gen_video.sh`；本脚本走标准 `/api/v3/contents/generations/tasks`
+
+2. **开通模型**
+   - 控制台开通 **Seedance**（如 `doubao-seedance-1-5-pro-251215`）
+   - 按 Token 后付费；单次 5s 720p 约消耗 10 万+ completion tokens（以控制台为准）
+
+3. **网络**
+   - 国内直连 `ark.cn-beijing.volces.com` 通常可用，**一般不需要代理**
+
+### 使用示例
+
+```bash
+chmod +x ~/guanjun_skill/media-pipeline/scripts/gen_video.sh
+
+# 图生视频（首帧 URL）
+~/guanjun_skill/media-pipeline/scripts/gen_video.sh \
+  --prompt "无人机以极快速度穿越复杂障碍，沉浸式飞行体验" \
+  --image "https://ark-project.tos-cn-beijing.volces.com/doc_image/seepro_i2v.png" \
+  --duration 5
+
+# 图生视频（本地首帧）
+~/guanjun_skill/media-pipeline/scripts/gen_video.sh \
+  --prompt "人物缓缓转头，电影感光影" \
+  --image ~/Pictures/frame.png \
+  --duration 5 \
+  --ratio 9:16
+
+# 文生视频
+~/guanjun_skill/media-pipeline/scripts/gen_video.sh \
+  --prompt "海浪拍打礁石，慢镜头" \
+  --duration 5
+
+# 只拿在线 URL，不下载
+~/guanjun_skill/media-pipeline/scripts/gen_video.sh \
+  --prompt "..." --image "..." --url-only
+```
+
+成功时 stdout 一行本地 mp4 路径；stderr 含任务 ID、轮询状态、24h 有效预览 URL。
+
+### API 流程（脚本已实现）
+
+1. `POST {ARK_BASE_URL}/contents/generations/tasks` — 创建任务，返回 `id`
+2. `GET .../tasks/{id}` — 轮询至 `status=succeeded`
+3. 从 `content.video_url` 下载 mp4
+
+提示词参数通过 text 字段后缀传递，例如：`...  --duration 5 --camerafixed false --watermark true`
+
+### 常见错误（视频）
+
+| 现象 | 可能原因 | 处理 |
+|------|----------|------|
+| 401 | Key 无效 | 更新 `ARK_API_KEY` |
+| 403 | 未开通 Seedance 或欠费 | 控制台开通模型、充值 |
+| 任务 failed | 图片 URL 不可达或 prompt 违规 | 换可公网访问的图片或改 prompt |
+| 下载失败 | 签名 URL 过期（24h） | 用 `--url-only` 及时下载 |
+| 用了 Coding Plan Key | Base URL 不对 | 必须用按量 API Key + 本脚本默认 URL |
+
+---
+
+## OpenAI 文生图 — 国内访问与排错
 
 ## 国内访问指南
 
@@ -28,14 +119,32 @@ export all_proxy=socks5://127.0.0.1:7890
 若使用**兼容 OpenAI 协议**的网关/中转服务，在 `.env` 中设置：
 
 ```bash
+OPENAI_API_KEY=你的密钥
 OPENAI_BASE_URL=https://你的网关域名/v1
+
+# 国内直连中转时可不设代理；走官方则保留：
+# https_proxy=http://127.0.0.1:7890
+# http_proxy=http://127.0.0.1:7890
+# all_proxy=socks5://127.0.0.1:7890
 ```
 
 注意：
 
 - 仅使用你信任的服务商；脚本**不会**内置任何第三方中转 URL。
-- 中转需支持 `images/generations` 及 `gpt-image-2` 或 `gpt-image-1` 模型名。
+- 本脚本走 **`/v1/images/generations`**，模型名为 `gpt-image-2` / `gpt-image-1`；与 OpenRouter 的 chat+modalities 图像接口**不兼容**。
 - 费用与稳定性由服务商决定，与 OpenAI 官方定价可能不同。
+
+#### 推荐中转（2026，按与 gen_image.py 兼容性）
+
+| 方案 | Base URL 示例 | gpt-image-2 | 支付 | 适合 |
+|------|---------------|-------------|------|------|
+| OpenAI 官方 + 代理 | `https://api.openai.com/v1`（默认） | ✅ 原生 | 海外卡 | 生产 / 有官方账号 |
+| Vercel AI Gateway | `https://ai-gateway.vercel.sh/v1` | ✅ 模型名可能为 `openai/gpt-image-2` | 信用卡 | 生产备选 |
+| OpenRouter | `https://openrouter.ai/api/v1` | ⚠️ 仅 chat 图像，**不适配本脚本** | 信用卡/AliPay | Cursor 对话 / 多模型 |
+| 自托管 New-API | `http://localhost:3000/v1` | 取决于上游渠道 | 自备上游 | 团队内网 |
+| 国内 One-API 类中转 | 服务商提供 | 需实测 `images/generations` | 支付宝/微信 | 个人开发备用 |
+
+**风险提醒**：第三方中转可能违反上游 ToS；请求内容经第三方；国内小站质量参差，勿预存大额；视频模型（Sora 2 API）官方将于 2026-09-24 下线，勿长期绑定单一逆向渠道。
 
 ### 费用参考（gpt-image-2）
 
