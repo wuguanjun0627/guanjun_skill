@@ -2,6 +2,9 @@
 # Scan top-level items in given paths; write inventory.json
 set -euo pipefail
 
+SCRIPT_DIR="${0:A:h}"
+source "${SCRIPT_DIR}/setup.sh"
+
 DATA_DIR="${FILE_ORGANIZER_DATA:-$HOME/.cursor/file-organizer}"
 PHD_ROOT="${FILE_ORGANIZER_PHD:-$HOME/Documents/博士相关资料}"
 STAGING="${FILE_ORGANIZER_STAGING:-$HOME/Downloads/_整理}"

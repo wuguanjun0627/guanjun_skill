@@ -14,6 +14,8 @@ description: >-
 
 ## 触发与开场
 
+**自动初始化**：路由到本技能后 Agent 先运行 `zsh ~/guanjun_skill/hub/scripts/bootstrap.sh organize-files`（或依赖 scan/plan/execute 脚本内置 `setup.sh`）。无需用户创建配置目录。
+
 用户未给出具体指令时，先说明即将扫描以下默认路径（可写入配置 JSON）：
 
 - `~/Downloads`

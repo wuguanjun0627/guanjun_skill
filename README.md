@@ -1,71 +1,38 @@
 # guanjun_skill
 
-个人 Cursor **技能集合（Skill Hub）**。一次安装，复制下面一段话发给 Agent 即可加载并路由到具体技能。
+个人 Cursor **技能集合（Skill Hub）**。安装一次后，**日常只需一句 prompt**，Agent 会自动 bootstrap（拉密钥、建目录、装依赖）。
 
 ## 一次性安装
 
 ```bash
-git clone https://github.com/wuguanjun0627/guanjun_skill.git ~/guanjun_skill
-ln -sf ~/guanjun_skill ~/.cursor/skills/guanjun-skill-hub
+zsh ~/guanjun_skill/hub/scripts/install.sh
+# 或手动：
+# git clone https://github.com/wuguanjun0627/guanjun_skill.git ~/guanjun_skill
+# ln -sf ~/guanjun_skill ~/.cursor/skills/guanjun-skill-hub
 ```
 
-安装后新开 Agent 会话（或重新打开对话），技能才会被识别。
+需已 `gh auth login`（用于从 private 仓库自动拉 API Key）。
 
-## 一键加载 Hub
+## 一句 prompt 即可
 
-复制下面这段话发给 Agent，由 Hub 读取 [hub/INDEX.md](./hub/INDEX.md) 并路由到对应子技能：
+| 想做什么 | 复制发给 Agent |
+|----------|----------------|
+| 文生图 | `用 guanjun_skill 生成图：日落城市天际线，2K` |
+| 图生视频 | `用 guanjun_skill 生成视频：无人机穿越障碍，首帧 https://ark-project.tos-cn-beijing.volces.com/doc_image/seepro_i2v.png，5秒` |
+| 整理文件 | `用 guanjun_skill 整理 Downloads 和 Documents，出计划等我确认` |
 
-```
-请加载 guanjun_skill 技能集合：https://github.com/wuguanjun0627/guanjun_skill。先读 hub/INDEX.md，再根据我的需求路由到对应子技能。
-```
-
-也可粘贴仓库链接、说「用 guanjun_skill」；执行细节见仓库内 `hub/AGENT.md` 与各子技能 `SKILL.md`。
+Agent 会自动：`bootstrap.sh` → 拉 `ARK_API_KEY` → 执行对应脚本。**无需**再手动 `pull_env` 或配置路径。
 
 ## 技能一览
 
-完整注册表见 [hub/INDEX.md](./hub/INDEX.md)。新增子技能时在此表追加一行即可。
+见 [hub/INDEX.md](./hub/INDEX.md)。协议见 [hub/AGENT.md](./hub/AGENT.md)。
 
-| 名称 | 一句话介绍 | 复制即用 prompt |
-|------|------------|-----------------|
-| [organize-files](./organize-files/) | macOS 三阶段文件整理：扫描常见文件夹 → 中文整理计划 → 确认后安全移动 | 见下方 |
-| [media-pipeline](./media-pipeline/) | 火山 Seedream 文生图 + Seedance 视频 + OpenAI 文生图 | 见下方 |
+| 名称 | 自动配置 |
+|------|----------|
+| [media-pipeline](./media-pipeline/) | 输出目录、`~/.config/ai-media/.env`（private secrets）、openai 包 |
+| [organize-files](./organize-files/) | `~/.cursor/file-organizer/`、默认 config.json |
 
-### organize-files
+## 密钥（仅所有者）
 
-**介绍：** 交互式整理 `Downloads`、`Documents` 等路径：先扫描统计，再给出中文移动计划，你确认后才执行 `mv`（不删文件）。
-
-**复制即用：**
-
-```
-用 guanjun_skill 的 organize-files：扫描 Downloads 和 Documents，列出整理计划，等我确认再执行。
-```
-
-### media-pipeline
-
-**介绍：** 火山 **Seedream** 文生图 + **Seedance** 图生/文生视频 + OpenAI gpt-image-2。密钥通过 **private 仓库** [`guanjun-skill-secrets`](https://github.com/wuguanjun0627/guanjun-skill-secrets) 同步到 `~/.config/ai-media/.env`（仅所有者可拉取）；运行 `pull_env.sh` 或各 `gen_*.sh` 自动拉取。
-
-**首次配置：**
-
-```
-用 guanjun_skill 的 media-pipeline：先执行 pull_env.sh 拉取密钥，再帮我生成一张图——prompt「日落城市天际线」，size 2K。
-```
-
-**复制即用（图生视频）：**
-
-```
-用 guanjun_skill 的 media-pipeline：执行 gen_video.sh，prompt 是「无人机穿越障碍的沉浸式飞行」，首帧图用 https://ark-project.tos-cn-beijing.volces.com/doc_image/seepro_i2v.png，时长 5 秒。
-```
-
----
-
-<!-- 新增技能模板（复制一段即可）：
-### <skill-name>
-
-**介绍：** …
-
-**复制即用：**
-
-```
-用 guanjun_skill 的 <skill-name>：…
-```
--->
+- Private 仓库：[guanjun-skill-secrets](https://github.com/wuguanjun0627/guanjun-skill-secrets)
+- 更新 Key 后：`~/guanjun_skill/media-pipeline/scripts/push_env.sh`

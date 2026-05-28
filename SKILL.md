@@ -15,11 +15,11 @@ description: >-
 
 ## 加载后第一步
 
-1. 读取 [hub/INDEX.md](hub/INDEX.md) — 技能注册表与触发词 → 路径映射
-2. 根据用户消息匹配一行 registry，确定子技能目录（如 `organize-files/`）
-3. **仅在被路由后**读取该目录下的 `SKILL.md`，并严格按子技能流程执行
+1. 读取 [hub/INDEX.md](hub/INDEX.md) — 匹配用户一句 prompt 到子技能
+2. **自动初始化**：`zsh ~/guanjun_skill/hub/scripts/bootstrap.sh <skill-name>`（无需用户确认）
+3. 读取该目录 `SKILL.md` 并执行
 
-详细引导顺序见 [hub/AGENT.md](hub/AGENT.md)（可选深读）。
+协议见 [hub/AGENT.md](hub/AGENT.md)。
 
 ## 路由规则
 

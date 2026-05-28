@@ -19,41 +19,23 @@ description: >-
 | `gen_video.sh`     | 文生视频 / 图生视频 | 火山方舟 Seedance      |
 
 
-## 前置条件
+## 前置条件（全自动，无需用户手动配置）
 
-1. Python 3.10+（火山脚本仅用标准库；OpenAI 生图需 `pip install openai`）
-2. **`gh` CLI 已登录** `wuguanjun0627`（用于从 private 仓库拉取密钥）
-3. 配置 `~/.config/ai-media/.env`（见下方「Private 密钥同步」或 [.env.example](.env.example) 手动填写）
-4. OpenAI 生图：国内需代理或 `OPENAI_BASE_URL`（见 [reference.md](reference.md#openai-文生图--国内访问与排错)）
-5. 火山生图/视频：需方舟 **按量付费 API Key**（`ARK_API_KEY`），**不是** Coding Plan 的 Key
+Agent 路由到本技能后**先**运行：
 
 ```bash
-mkdir -p ~/Projects/ai-media/output ~/.config/ai-media
-chmod +x ~/guanjun_skill/media-pipeline/scripts/*.sh
-
-# 推荐：从 private 仓库拉取（仅仓库所有者可成功）
-~/guanjun_skill/media-pipeline/scripts/pull_env.sh
+zsh ~/guanjun_skill/hub/scripts/bootstrap.sh media-pipeline
 ```
 
-## Private 密钥同步（仅所有者）
+或依赖各 `gen_*.sh` 内置的 `ensure_env.sh`（自动 `setup.sh` → `pull_env.sh`）。
 
-API Key 存放在 **private 仓库** [`wuguanjun0627/guanjun-skill-secrets`](https://github.com/wuguanjun0627/guanjun-skill-secrets)（其他人 clone `guanjun_skill` 也**无法**读取该仓库）。
+自动完成：
 
-| 脚本 | 作用 |
-|------|------|
-| `pull_env.sh` | 拉取 `ai-media.env` → `~/.config/ai-media/.env` |
-| `push_env.sh` | 本地 `.env` 更新后上传回 private 仓库 |
-| `ensure_env.sh` | 被各 `gen_*.sh` 自动调用；本地无有效 Key 时尝试 `pull_env.sh` |
+- 创建 `~/Projects/ai-media/output/`、`~/.config/ai-media/`
+- 从 private 仓库 [`guanjun-skill-secrets`](https://github.com/wuguanjun0627/guanjun-skill-secrets) 拉取 `ARK_API_KEY`（需 `gh auth login` 为所有者）
+- 缺失时 `pip install openai`
 
-```bash
-# 拉取（需 gh auth login 为 wuguanjun0627）
-~/guanjun_skill/media-pipeline/scripts/pull_env.sh
-
-# 本地改完 key 后上传
-~/guanjun_skill/media-pipeline/scripts/push_env.sh "update ARK key"
-```
-
-**Agent 工作流**：执行任何 `gen_*.sh` 前，若 `~/.config/ai-media/.env` 不存在或仍为占位符，**先运行** `pull_env.sh`；失败则提示用户手动配置，**禁止**把真实 Key 写入 `guanjun_skill` 仓库。
+**不要**向用户索要 API Key；拉取失败时再提示检查 `gh auth login`。
 
 ## 火山文生图（Seedream，国内推荐）
 
@@ -143,24 +125,29 @@ export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_pr
 
 ## Agent 工作流
 
+1. `bootstrap.sh media-pipeline`（或依赖 `gen_*.sh` 自动 setup）
+2. 按任务选脚本，**不要**问用户要 Key
+
 ### 生成图片（火山，默认优先）
 
-1. 若无有效 `ARK_API_KEY`，先执行 `scripts/pull_env.sh`
-2. 执行 `scripts/gen_ark_image.sh`，传入 `--prompt`
-3. 将本地路径告知用户；失败时对照 [reference.md](reference.md#火山方舟文生图-seedream)
+1. 执行 `scripts/gen_ark_image.sh --prompt "..."` 
+2. 将 stdout 本地路径告知用户
 
 ### 生成图片（OpenAI）
 
-1. 确认 `OPENAI_API_KEY`；国内提醒代理或中转
-2. 执行 `scripts/gen_image.sh`
-3. 将输出路径告知用户
+1. 执行 `scripts/gen_image.sh`（国内若失败见 reference 代理说明）
 
 ### 生成视频
 
-1. 若无有效 `ARK_API_KEY`，先执行 `scripts/pull_env.sh`
-2. 执行 `scripts/gen_video.sh`，传入 `--prompt` 与用户提供的首帧图（`--image`）
-3. 脚本自动：创建任务 → 轮询 → 下载 mp4；将本地路径告知用户
-4. 失败时对照 [reference.md](reference.md#火山方舟图生视频--文生视频)
+1. 执行 `scripts/gen_video.sh --prompt "..." [--image URL]`
+2. 将本地 mp4 路径告知用户
+
+## 密钥维护（仅所有者手动）
+
+| 脚本 | 作用 |
+|------|------|
+| `pull_env.sh` | 强制从 private 仓库同步 |
+| `push_env.sh` | 本地改 Key 后上传 |
 
 ## 参考
 

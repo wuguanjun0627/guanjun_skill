@@ -2,6 +2,9 @@
 # Build plan.json draft from inventory.json
 set -euo pipefail
 
+SCRIPT_DIR="${0:A:h}"
+source "${SCRIPT_DIR}/setup.sh"
+
 DATA_DIR="${FILE_ORGANIZER_DATA:-$HOME/.cursor/file-organizer}"
 INVENTORY="$DATA_DIR/inventory.json"
 PLAN="$DATA_DIR/plan.json"

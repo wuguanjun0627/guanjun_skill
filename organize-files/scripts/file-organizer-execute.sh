@@ -2,6 +2,9 @@
 # Execute approved plan.json; write manifest.json
 set -euo pipefail
 
+SCRIPT_DIR="${0:A:h}"
+source "${SCRIPT_DIR}/setup.sh"
+
 DATA_DIR="${FILE_ORGANIZER_DATA:-$HOME/.cursor/file-organizer}"
 PLAN="$DATA_DIR/plan.json"
 MANIFEST="$DATA_DIR/manifest.json"
