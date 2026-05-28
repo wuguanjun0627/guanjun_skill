@@ -42,12 +42,12 @@ ln -sf ~/guanjun_skill ~/.cursor/skills/guanjun-skill-hub
 
 ### media-pipeline
 
-**介绍：** 火山 **Seedream** 文生图 + **Seedance** 图生/文生视频 + OpenAI gpt-image-2。密钥在 `~/.config/ai-media/.env`（`ARK_API_KEY` / `OPENAI_API_KEY`）。国内优先用火山脚本，无需代理。
+**介绍：** 火山 **Seedream** 文生图 + **Seedance** 图生/文生视频 + OpenAI gpt-image-2。密钥通过 **private 仓库** [`guanjun-skill-secrets`](https://github.com/wuguanjun0627/guanjun-skill-secrets) 同步到 `~/.config/ai-media/.env`（仅所有者可拉取）；运行 `pull_env.sh` 或各 `gen_*.sh` 自动拉取。
 
-**复制即用（火山文生图）：**
+**首次配置：**
 
 ```
-用 guanjun_skill 的 media-pipeline：执行 gen_ark_image.sh，prompt 是「星际穿越，黑洞里冲出支离破碎的复古列车，电影大片」，size 2K。
+用 guanjun_skill 的 media-pipeline：先执行 pull_env.sh 拉取密钥，再帮我生成一张图——prompt「日落城市天际线」，size 2K。
 ```
 
 **复制即用（图生视频）：**

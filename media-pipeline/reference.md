@@ -1,5 +1,30 @@
 # 媒体生成 — 配置与排错
 
+## Private 密钥仓库（仅所有者）
+
+真实 API Key 不在 `guanjun_skill` 公开代码中，而存放在 **private 仓库**：
+
+- 仓库：`wuguanjun0627/guanjun-skill-secrets`
+- 文件：`ai-media.env`
+- 本地路径：`~/.config/ai-media/.env`
+
+```bash
+# 前置：brew install gh && gh auth login  （账号 wuguanjun0627）
+~/guanjun_skill/media-pipeline/scripts/pull_env.sh
+```
+
+其他人 clone `guanjun_skill` 后执行 `pull_env.sh` 会返回 **404 / 无权限**；只有仓库所有者（你）能拉取并正常使用生图/生视频脚本。
+
+更新本地 Key 后同步回 GitHub：
+
+```bash
+~/guanjun_skill/media-pipeline/scripts/push_env.sh "update keys"
+```
+
+各 `gen_*.sh` 在检测到占位符 Key 时会自动尝试 `pull_env.sh`。
+
+---
+
 ## 火山方舟文生图（Seedream）
 
 ### 使用示例

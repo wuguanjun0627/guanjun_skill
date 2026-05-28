@@ -11,4 +11,6 @@ if ! command -v python3 &>/dev/null; then
   exit 1
 fi
 
+source "${SCRIPT_DIR}/ensure_env.sh"
+
 exec python3 "${PY_SCRIPT}" "$@"
